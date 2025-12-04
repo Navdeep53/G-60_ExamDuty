@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
 
 class InvigilationFormScreen extends StatefulWidget {
   final String userName;
@@ -24,68 +21,26 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
   final _examTypeController = TextEditingController();
   final _numStudentsController = TextEditingController();
 
-  File? _selectedFile;
   bool _isLoading = false;
 
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc', 'png'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      setState(() {
-        _selectedFile = File(result.files.single.path!);
-      });
-    }
-  }
-
+  // Simple local submit simulation (no HTTP)
   Future<void> _submitFormToBackend() async {
-    if (!_formKey.currentState!.validate() || _selectedFile == null) return;
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
     });
 
-    final uri = Uri.parse('http://10.0.2.2:3000/submit-form'); // Adjust as needed
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
 
-    try {
-      final request = http.MultipartRequest('POST', uri);
+    if (!mounted) return;
 
-      request.fields['userName'] = widget.userName;
-      request.fields['userEmail'] = widget.userEmail;
-      request.fields['examDate'] = _examDateController.text.trim();
-      request.fields['examSlot'] = _examSlotController.text.trim();
-      request.fields['examType'] = _examTypeController.text.trim();
-      request.fields['numStudents'] = _numStudentsController.text.trim();
-
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'invigilation_file',
-          _selectedFile!.path,
-        ),
-      );
-
-      final response = await request.send();
-
-      if (!mounted) return;
-
-      if (response.statusCode == 200) {
-        _showSubmitSuccess(context);
-      } else {
-        _showErrorSnackBar('Server Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (mounted) {
-        _showErrorSnackBar('Connection Error: $e');
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    _showSubmitSuccess(context);
+    
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _showErrorSnackBar(String message) {
@@ -101,7 +56,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
       builder: (ctx) => AlertDialog(
         title: const Text("Success"),
         content: const Text(
-          "Invigilation Form has been submitted successfully to the server.",
+          "Invigilation Form has been submitted successfully.",
         ),
         actions: [
           TextButton(
@@ -120,8 +75,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
       _examDateController.text.trim().isNotEmpty &&
       _examSlotController.text.trim().isNotEmpty &&
       _examTypeController.text.trim().isNotEmpty &&
-      _numStudentsController.text.trim().isNotEmpty &&
-      _selectedFile != null;
+      _numStudentsController.text.trim().isNotEmpty;
 
   @override
   void dispose() {
@@ -209,8 +163,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
 
             // Subject Card
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
@@ -310,8 +263,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
                               width: 1,
                             ),
                           ),
-                          padding:
-                              const EdgeInsets.fromLTRB(18, 21, 18, 21),
+                          padding: const EdgeInsets.fromLTRB(18, 21, 18, 21),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -324,7 +276,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
                               ),
                               const SizedBox(height: 5),
                               const Text(
-                                "Fill in the exam details and upload the completed invigilation form",
+                                "Fill in the exam details.",
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.black54,
@@ -358,7 +310,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
                               const SizedBox(height: 21),
 
                               const Text(
-                                "Upload Invigilation Form",
+                                "Invigilation Form Upload",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black54,
@@ -366,13 +318,45 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
                                 ),
                               ),
                               const SizedBox(height: 9),
-
-                              _UploadInvigilationWidget(
-                                uploaded: _selectedFile != null,
-                                fileName: _selectedFile != null
-                                    ? _selectedFile!.path.split('/').last
-                                    : null,
-                                onPressed: _pickFile,
+                              Container(
+                                width: double.infinity,
+                                height: 89,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF6F6FB),
+                                  borderRadius: BorderRadius.circular(13),
+                                  border: Border.all(
+                                    color: const Color(0xFFBEBEC7),
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(
+                                      Icons.insert_drive_file_outlined,
+                                      size: 38,
+                                      color: Color(0xFFB0B2BC),
+                                    ),
+                                    SizedBox(height: 7),
+                                    Text(
+                                      "File upload disabled in this version",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.5,
+                                        color: Color(0xFF65657E),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(height: 1),
+                                    Text(
+                                      "Contact admin if upload is required",
+                                      style: TextStyle(
+                                        fontSize: 12.4,
+                                        color: Color(0xFFB5B6C6),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
 
                               const SizedBox(height: 19),
@@ -410,21 +394,18 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
                                       backgroundColor: _canSubmit
                                           ? const Color(0xFF5335EA)
                                           : const Color(0xFFB5B6C6),
-                                      padding:
-                                          const EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 48,
                                         vertical: 5,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(14),
                                       ),
                                       elevation: 0,
                                     ),
-                                    onPressed:
-                                        (_canSubmit && !_isLoading)
-                                            ? _submitFormToBackend
-                                            : null,
+                                    onPressed: (_canSubmit && !_isLoading)
+                                        ? _submitFormToBackend
+                                        : null,
                                   ),
                                 ),
                               ),
@@ -446,8 +427,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
 
   Widget _buildBottomBarRounded(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.only(top: 3, left: 1, right: 1, bottom: 7),
+      padding: const EdgeInsets.only(top: 3, left: 1, right: 1, bottom: 7),
       decoration: BoxDecoration(
         color: Colors.grey[200]?.withOpacity(0.95),
         borderRadius: const BorderRadius.only(
@@ -466,9 +446,18 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavItem(icon: Icons.home_rounded, label: "Home", onTap: () {}),
-          _NavItem(icon: Icons.account_balance_rounded, label: "Bank Details", onTap: () {}),
-          _NavItem(icon: Icons.account_balance_wallet_rounded, label: "Honorarium Status", onTap: () {}),
-          _NavItem(icon: Icons.person_rounded, label: "My Profile", onTap: () {}),
+          _NavItem(
+              icon: Icons.account_balance_rounded,
+              label: "Bank Details",
+              onTap: () {}),
+          _NavItem(
+              icon: Icons.account_balance_wallet_rounded,
+              label: "Honorarium Status",
+              onTap: () {}),
+          _NavItem(
+              icon: Icons.person_rounded,
+              label: "My Profile",
+              onTap: () {}),
         ],
       ),
     );
@@ -544,62 +533,6 @@ class _LabelWithMandatoryField extends StatelessWidget {
   }
 }
 
-class _UploadInvigilationWidget extends StatelessWidget {
-  final bool uploaded;
-  final String? fileName;
-  final VoidCallback onPressed;
-
-  const _UploadInvigilationWidget({
-    this.uploaded = false,
-    this.fileName,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: double.infinity,
-        height: 89,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF6F6FB),
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: const Color(0xFFBEBEC7),
-            width: 1.2,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              uploaded ? Icons.check_circle_rounded : Icons.insert_drive_file_outlined,
-              size: 38,
-              color: uploaded ? Colors.green : const Color(0xFFB0B2BC),
-            ),
-            const SizedBox(height: 7),
-            Text(
-              uploaded ? (fileName ?? "File Selected") : "Click to Upload Invigilation Form",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.5,
-                color: uploaded ? Colors.green[700] : const Color(0xFF65657E),
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 1),
-            const Text(
-              "PDF, DOC, or image files (Max 10MB)",
-              style: TextStyle(fontSize: 12.4, color: Color(0xFFB5B6C6)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -645,8 +578,7 @@ class _ExamTypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(13),

@@ -3,7 +3,9 @@ import 'attendance_selfie.dart';
 import 'invigilation_form.dart';
 import 'center_details.dart';
 import 'dashboard_screen.dart';
-import 'login_screen.dart'; // <- Change this import if your login screen file/class is named differently
+import 'login_screen.dart';
+import 'feedback_form.dart';
+import 'travel_stay.dart';
 
 class ExamFormalitiesScreen extends StatelessWidget {
   final String userName;
@@ -15,15 +17,17 @@ class ExamFormalitiesScreen extends StatelessWidget {
     required this.userEmail,
   });
 
-  static const Color blueLeft = Color(0x9F1E2CF0);    // #1E2CF0, 62% opacity
-  static const Color purpleRight = Color(0x946C0AF4); // #6C0AF4, 58% opacity
+  static const Color blueLeft = Color(0x9F1E2CF0);
+  static const Color purpleRight = Color(0x946C0AF4);
 
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Logout"),
-        content: const Text("Are you sure you want to logout?\nYou will be redirected to the login screen."),
+        content: const Text(
+          "Are you sure you want to logout?\nYou will be redirected to the login screen.",
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -33,13 +37,16 @@ class ExamFormalitiesScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => LoginScreen()),
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
                 (route) => false,
               );
             },
             child: const Text(
               "Logout",
-              style: TextStyle(color: Color(0xFF5335EA), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Color(0xFF5335EA),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -95,7 +102,11 @@ class ExamFormalitiesScreen extends StatelessWidget {
                                     color: Color(0xFF5335EA),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.school_rounded, color: Colors.white, size: 21),
+                                  child: const Icon(
+                                    Icons.school_rounded,
+                                    color: Colors.white,
+                                    size: 21,
+                                  ),
                                 ),
                               ),
                             ),
@@ -113,7 +124,11 @@ class ExamFormalitiesScreen extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(right: 6),
                               child: IconButton(
-                                icon: const Icon(Icons.logout, color: Colors.white, size: 26),
+                                icon: const Icon(
+                                  Icons.logout,
+                                  color: Colors.white,
+                                  size: 26,
+                                ),
                                 onPressed: () => _showLogoutDialog(context),
                               ),
                             ),
@@ -122,7 +137,10 @@ class ExamFormalitiesScreen extends StatelessWidget {
                       ),
                       Container(
                         margin: const EdgeInsets.fromLTRB(20, 22, 20, 18),
-                        padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 14),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 17,
+                          horizontal: 14,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF9180CB),
                           borderRadius: BorderRadius.circular(16),
@@ -149,7 +167,11 @@ class ExamFormalitiesScreen extends StatelessWidget {
                               child: const CircleAvatar(
                                 backgroundColor: Colors.black,
                                 radius: 21,
-                                child: Icon(Icons.person, color: Colors.white, size: 28),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 17),
@@ -168,7 +190,10 @@ class ExamFormalitiesScreen extends StatelessWidget {
                                 const SizedBox(height: 3),
                                 Text(
                                   userEmail,
-                                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -179,9 +204,11 @@ class ExamFormalitiesScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
               // Subject Card
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -189,8 +216,8 @@ class ExamFormalitiesScreen extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0xED1E2CF0), // blue top (93%)
-                        Color(0xBF6C0AF4), // purple bottom (74%)
+                        Color(0xED1E2CF0),
+                        Color(0xBF6C0AF4),
                       ],
                     ),
                   ),
@@ -210,7 +237,10 @@ class ExamFormalitiesScreen extends StatelessWidget {
                           ),
                           const Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(13),
@@ -229,30 +259,66 @@ class ExamFormalitiesScreen extends StatelessWidget {
                       const SizedBox(height: 7),
                       Row(
                         children: const [
-                          Icon(Icons.folder_copy_outlined, color: Colors.white, size: 17),
+                          Icon(
+                            Icons.folder_copy_outlined,
+                            color: Colors.white,
+                            size: 17,
+                          ),
                           SizedBox(width: 8),
-                          Text("Course Code", style: TextStyle(color: Colors.white, fontSize: 13.2)),
+                          Text(
+                            "Course Code",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.2,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 7),
                       Row(
                         children: const [
-                          Icon(Icons.calendar_month_rounded, color: Colors.white, size: 16),
+                          Icon(
+                            Icons.calendar_month_rounded,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                           SizedBox(width: 7),
-                          Text("Date", style: TextStyle(color: Colors.white, fontSize: 13.2)),
+                          Text(
+                            "Date",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.2,
+                            ),
+                          ),
                           Spacer(),
-                          Icon(Icons.access_time_rounded, color: Colors.white70, size: 16),
+                          Icon(
+                            Icons.access_time_rounded,
+                            color: Colors.white70,
+                            size: 16,
+                          ),
                           SizedBox(width: 5),
-                          Text("Time", style: TextStyle(color: Colors.white, fontSize: 13.2)),
+                          Text(
+                            "Time",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.2,
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
               ),
-              // Exam Center Details pill...
+
+              // Exam Center Details pill
               Padding(
-                padding: const EdgeInsets.only(top: 2, left: 22, right: 22, bottom: 13),
+                padding: const EdgeInsets.only(
+                  top: 2,
+                  left: 22,
+                  right: 22,
+                  bottom: 13,
+                ),
                 child: Center(
                   child: Container(
                     width: double.infinity,
@@ -271,7 +337,11 @@ class ExamFormalitiesScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.location_on_rounded, color: Colors.white, size: 19),
+                        const Icon(
+                          Icons.location_on_rounded,
+                          color: Colors.white,
+                          size: 19,
+                        ),
                         const SizedBox(width: 9),
                         const Text(
                           "Exam Center Details",
@@ -306,11 +376,13 @@ class ExamFormalitiesScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // Formalities cards grid
+
+              // Formalities cards list
               ListView(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                 children: [
                   _FormalitiesCard(
                     icon: Icons.camera_alt_rounded,
@@ -351,15 +423,36 @@ class ExamFormalitiesScreen extends StatelessWidget {
                     color: const Color(0xFFE4B852),
                     title: "Feedback",
                     subtitle: "Share Your Exam Duty Feedback",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedbackFormScreen(
+                            userName: userName,
+                            userEmail: userEmail,
+                          ),
+                        ),
+                      );
+                    },
                   ),
+                  // Travel & Stay -> now navigates to TravelStayScreen
                   _FormalitiesCard(
                     icon: Icons.flight_takeoff_rounded,
                     color: const Color(0xFFCE7DD9),
                     title: "Travel & Stay",
                     subtitle: "Submit: Your Accommodation Details",
                     iconTransform: Matrix4.rotationZ(-0.15),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TravelStayScreen(
+                            userName: userName,
+                            userEmail: userEmail,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -404,9 +497,21 @@ class ExamFormalitiesScreen extends StatelessWidget {
               );
             },
           ),
-          _NavItem(icon: Icons.account_balance_rounded, label: "Bank Details", onTap: () {}),
-          _NavItem(icon: Icons.account_balance_wallet_rounded, label: "Honorarium Status", onTap: () {}),
-          _NavItem(icon: Icons.person_rounded, label: "My Profile", onTap: () {}),
+          _NavItem(
+            icon: Icons.account_balance_rounded,
+            label: "Bank Details",
+            onTap: () {},
+          ),
+          _NavItem(
+            icon: Icons.account_balance_wallet_rounded,
+            label: "Honorarium Status",
+            onTap: () {},
+          ),
+          _NavItem(
+            icon: Icons.person_rounded,
+            label: "My Profile",
+            onTap: () {},
+          ),
         ],
       ),
     );
@@ -432,7 +537,7 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Color(0xFF196BDE), size: 28),
+          Icon(icon, color: const Color(0xFF196BDE), size: 28),
           const SizedBox(height: 2),
           Text(
             label,
@@ -518,7 +623,11 @@ class _FormalitiesCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, color: Colors.black38, size: 23),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.black38,
+                  size: 23,
+                ),
               ],
             ),
           ),
