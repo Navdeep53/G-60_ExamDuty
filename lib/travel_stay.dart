@@ -678,6 +678,7 @@ class _TextField extends StatelessWidget {
     required this.hint,
     required this.controller,
     required this.isRequired,
+    // ignore: unused_element_parameter
     this.keyboardType,
   });
 

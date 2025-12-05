@@ -43,6 +43,7 @@ class _InvigilationFormScreenState extends State<InvigilationFormScreen> {
     });
   }
 
+  // ignore: unused_element
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.red),

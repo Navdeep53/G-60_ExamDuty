@@ -27,11 +27,21 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
   final _suggestionsController = TextEditingController();
   final _issuesController = TextEditingController();
 
+  int _overallRating = 0; // 1–5 stars
+
   bool _isLoading = false;
 
   Future<void> _submitFeedback() async {
-    // Sirf required wale validate honge
     if (!_formKey.currentState!.validate()) return;
+    if (_overallRating == 0) {
+      // star compulsory rakhna ho to ye check rakho, warna hata sakta hai
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please select an overall exam duty rating."),
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(seconds: 1));
@@ -42,12 +52,13 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         title: const Text("Success"),
-        content: const Text("Your feedback has been submitted successfully."),
+        content:
+            const Text("Your feedback has been submitted successfully."),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(ctx).pop();      // dialog close
-              Navigator.of(context).pop();  // formalities page pe wapas
+              Navigator.of(ctx).pop(); // dialog close
+              Navigator.of(context).pop(); // previous page
             },
             child: const Text("Okay"),
           ),
@@ -314,7 +325,7 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
                           ),
                           const SizedBox(height: 14),
 
-                          // OPTIONAL QUESTIONS – yahan validation OFF hai
+                          // OPTIONAL
                           _QuestionField(
                             question: "Suggestions for Improvement",
                             controller: _suggestionsController,
@@ -326,6 +337,39 @@ class _FeedbackFormScreenState extends State<FeedbackFormScreen> {
                             question: "Issues Encountered (If any)",
                             controller: _issuesController,
                             isRequired: false,
+                          ),
+                          const SizedBox(height: 18),
+
+                          // OVERALL RATING
+                          const Text(
+                            "Overall Exam Duty Rating",
+                            style: TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: List.generate(5, (index) {
+                              final starIndex = index + 1;
+                              final isFilled = _overallRating >= starIndex;
+                              return IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  setState(() {
+                                    _overallRating = starIndex;
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.star,
+                                  size: 30,
+                                  color: isFilled
+                                      ? const Color(0xFFFFC107)
+                                      : const Color(0xFFE0E0E0),
+                                ),
+                              );
+                            }),
                           ),
                           const SizedBox(height: 22),
 
@@ -436,7 +480,7 @@ class _QuestionField extends StatelessWidget {
           controller: controller,
           maxLines: 2,
           validator: (val) {
-            if (!isRequired) return null; // OPTIONAL
+            if (!isRequired) return null;
             if (val == null || val.trim().isEmpty) {
               return "Please type your answer";
             }
